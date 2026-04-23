@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package serialization.compare;
+
+option java_multiple_files = true;
+option java_package = "io.github.stellhub.serialization.compare.protobuf";
+option java_outer_classname = "BenchmarkProtoDefinitions";
+
+message BenchmarkEnvelopeProto {
+  string scenario_code = 1;
+  DatasetSizeProto dataset_size = 2;
+  DatasetFormatProto dataset_format = 3;
+  DataNatureProto data_nature = 4;
+  int64 seed = 5;
+
+  oneof payload {
+    StructuredFlatPayloadProto structured_flat_payload = 10;
+    StructuredNestedPayloadProto structured_nested_payload = 11;
+    UnstructuredTextPayloadProto unstructured_text_payload = 12;
+    UnstructuredBinaryPayloadProto unstructured_binary_payload = 13;
+  }
+}
+
+enum DatasetSizeProto {
+  DATASET_SIZE_PROTO_UNSPECIFIED = 0;
+  DATASET_SIZE_PROTO_SMALL = 1;
+  DATASET_SIZE_PROTO_MEDIUM = 2;
+  DATASET_SIZE_PROTO_LARGE = 3;
+}
+
+enum DatasetFormatProto {
+  DATASET_FORMAT_PROTO_UNSPECIFIED = 0;
+  DATASET_FORMAT_PROTO_STRUCTURED_FLAT = 1;
+  DATASET_FORMAT_PROTO_STRUCTURED_NESTED = 2;
+  DATASET_FORMAT_PROTO_UNSTRUCTURED_TEXT = 3;
+  DATASET_FORMAT_PROTO_UNSTRUCTURED_BINARY = 4;
+}
+
+enum DataNatureProto {
+  DATA_NATURE_PROTO_UNSPECIFIED = 0;
+  DATA_NATURE_PROTO_STRUCTURED = 1;
+  DATA_NATURE_PROTO_UNSTRUCTURED = 2;
+}
+
+message StructuredFlatPayloadProto {
+  string record_id = 1;
+  string tenant_id = 2;
+  int64 sequence = 3;
+  double amount = 4;
+  bool active = 5;
+  repeated string tags = 6;
+  map<string, string> attributes = 7;
+  repeated int64 scores = 8;
+  string description = 9;
+}
+
+message StructuredNestedPayloadProto {
+  UserProfileProto user = 1;
+  repeated OrderProto orders = 2;
+  repeated SessionProto sessions = 3;
+  map<string, string> labels = 4;
+  string summary = 5;
+}
+
+message UserProfileProto {
+  string user_id = 1;
+  string account = 2;
+  string display_name = 3;
+  int32 age = 4;
+  repeated string interests = 5;
+  AddressProto primary_address = 6;
+}
+
+message AddressProto {
+  string country = 1;
+  string province = 2;
+  string city = 3;
+  string district = 4;
+  string street = 5;
+  string postal_code = 6;
+}
+
+message OrderProto {
+  string order_id = 1;
+  int64 created_at_epoch_millis = 2;
+  repeated OrderItemProto items = 3;
+  double total_amount = 4;
+  map<string, string> attributes = 5;
+}
+
+message OrderItemProto {
+  string sku = 1;
+  string name = 2;
+  int32 quantity = 3;
+  double price = 4;
+}
+
+message SessionProto {
+  string session_id = 1;
+  string device = 2;
+  string ip = 3;
+  repeated string recent_actions = 4;
+}
+
+message UnstructuredTextPayloadProto {
+  string document_id = 1;
+  string title = 2;
+  string language = 3;
+  repeated string keywords = 4;
+  string raw_text = 5;
+  string raw_json_fragment = 6;
+  map<string, string> metadata = 7;
+}
+
+message UnstructuredBinaryPayloadProto {
+  string resource_id = 1;
+  string media_type = 2;
+  bytes content = 3;
+  repeated bytes chunks = 4;
+  map<string, string> metadata = 5;
+  string checksum = 6;
+}
